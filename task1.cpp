@@ -14,7 +14,7 @@ class HashMap {
                 : data(other_data), iter() {}
     };
 
-    const size_t kSizeArray = 500'000;
+    const size_t K_SIZE_ARRAY = 500'000;
     std::vector<std::list<typename std::list<Node>::iterator>> store_;
     Hash hasher_;
     size_t size_;
@@ -74,11 +74,11 @@ public:
             const Item>;
 
     HashMap(Hash hasher = Hash())
-            : store_(kSizeArray), hasher_(hasher), size_(0), list_for_iter_() {}
+            : store_(K_SIZE_ARRAY), hasher_(hasher), size_(0), list_for_iter_() {}
 
     template <class Iter>
     HashMap(Iter first, Iter last, Hash hasher = Hash())
-            : store_(kSizeArray), hasher_(hasher), size_(0), list_for_iter_() {
+            : store_(K_SIZE_ARRAY), hasher_(hasher), size_(0), list_for_iter_() {
         while (first != last) {
             insert(*first);
             ++first;
@@ -87,14 +87,14 @@ public:
 
     HashMap(std::initializer_list<Item> data,
             Hash hasher = Hash())
-            : store_(kSizeArray), hasher_(hasher), size_(0), list_for_iter_() {
+            : store_(K_SIZE_ARRAY), hasher_(hasher), size_(0), list_for_iter_() {
         for (auto it = data.begin(); it != data.end(); ++it) {
             insert(*it);
         }
     }
 
     HashMap(const HashMap& other):
-            store_(kSizeArray), hasher_(other.hasher_), size_(0), list_for_iter_() {
+            store_(K_SIZE_ARRAY), hasher_(other.hasher_), size_(0), list_for_iter_() {
         for (const auto& x : other) {
             insert(x);
         }
@@ -124,7 +124,7 @@ public:
     }
 
     void insert(const Item& other_item) {
-        size_t pos = hasher_(other_item.first) % kSizeArray;
+        size_t pos = hasher_(other_item.first) % K_SIZE_ARRAY;
         for (const auto& item : store_[pos]) {
             if (item->data.first == other_item.first) {
                 return;
@@ -137,7 +137,7 @@ public:
     }
 
     void erase(const KeyType& key) {
-        size_t pos = hasher_(key) % kSizeArray;
+        size_t pos = hasher_(key) % K_SIZE_ARRAY;
         for (auto it = store_[pos].begin(); it != store_[pos].end(); ++it) {
             if ((*it)->data.first == key) {
                 list_for_iter_.erase(*it);
@@ -166,7 +166,7 @@ public:
     }
 
     iterator find(const KeyType& key) {
-        size_t pos = hasher_(key) % kSizeArray;
+        size_t pos = hasher_(key) % K_SIZE_ARRAY;
         for (const auto& item : store_[pos]) {
             if (item->data.first == key) {
                 return iterator(item);
@@ -176,7 +176,7 @@ public:
     }
 
     const_iterator find(const KeyType& key) const {
-        size_t pos = hasher_(key) % kSizeArray;
+        size_t pos = hasher_(key) % K_SIZE_ARRAY;
         for (const auto& item : store_[pos]) {
             if (item->data.first == key) {
                 return const_iterator(item);
@@ -186,7 +186,7 @@ public:
     }
 
     ValueType& operator[](const KeyType& key) {
-        size_t pos = hasher_(key) % kSizeArray;
+        size_t pos = hasher_(key) % K_SIZE_ARRAY;
         for (const auto& item : store_[pos]) {
             if (item->data.first == key) {
                 return item->data.second;
@@ -197,7 +197,7 @@ public:
     }
 
     const ValueType& at(const KeyType& key) const {
-        size_t pos = hasher_(key) % kSizeArray;
+        size_t pos = hasher_(key) % K_SIZE_ARRAY;
         for (const auto& item : store_[pos]) {
             if (item->data.first == key) {
                 return item->data.second;
