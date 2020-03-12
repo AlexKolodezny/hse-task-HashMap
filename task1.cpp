@@ -5,11 +5,12 @@
 
 template <class KeyType, class ValueType, class Hash = std::hash<KeyType>>
 class HashMap {
+    using Item = std::pair<const KeyType, ValueType>;
     struct Node {
-        std::pair<const KeyType, ValueType> data;
+        Item data;
         typename std::list<typename std::list<Node>::iterator>::iterator iter;
 
-        Node(const std::pair<const KeyType, ValueType> other_data)
+        Node(const Item other_data)
                 : data(other_data), iter() {}
     };
 
@@ -68,9 +69,9 @@ class HashMap {
     };
 
 public:
-    using iterator = Iterator<typename std::list<Node>::iterator, std::pair<const KeyType, ValueType>>;
+    using iterator = Iterator<typename std::list<Node>::iterator, Item>;
     using const_iterator = Iterator<typename std::list<Node>::const_iterator,
-            const std::pair<const KeyType, ValueType>>;
+            const Item>;
 
     HashMap(Hash hasher = Hash())
             : store_(kSizeArray), hasher_(hasher), size_(0), list_for_iter_() {}
@@ -84,7 +85,7 @@ public:
         }
     }
 
-    HashMap(std::initializer_list<std::pair<KeyType, ValueType>> data,
+    HashMap(std::initializer_list<Item> data,
             Hash hasher = Hash())
             : store_(kSizeArray), hasher_(hasher), size_(0), list_for_iter_() {
         for (auto it = data.begin(); it != data.end(); ++it) {
@@ -122,7 +123,7 @@ public:
         return hasher_;
     }
 
-    void insert(const std::pair<const KeyType, ValueType>& other_item) {
+    void insert(const Item& other_item) {
         size_t pos = hasher_(other_item.first) % kSizeArray;
         for (const auto& item : store_[pos]) {
             if (item->data.first == other_item.first) {
